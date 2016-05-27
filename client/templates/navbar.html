@@ -1,0 +1,21 @@
+<template name="navbar">
+	<!--nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">WebSiteName</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<!-li class="{{#if equals navbarIndex 0}} active {{/if}}"><a href="/" id="HomeLink">Home</a></li>
+				<li class="{{#if equals navbarIndex 1}} active {{/if}}"><a href="/tables/" id="TablesLink">Tables</a></li>
+				<li class="{{#if equals navbarIndex 2}} active {{/if}}"><a href="/students" id="StudentsLink">Students</a></li>
+				<li class="{{#if equals navbarIndex 3}} active {{/if}}"><a href="/generate" id="GenerateLink">Generate</a></li->
+				<li class="{{ isActivePath '/' }}"><a href="/" id="HomeLink">Home</a></li>
+				<li class="{{ isActivePath '/tables' }}"><a href="/tables/" id="TablesLink">Tables</a></li>
+				<li class="{{ isActivePath '/students' }}"><a href="/students" id="StudentsLink">Students</a></li>
+				<li class="{{ isActivePath '/generate' }}"><a href="/generate" id="GenerateLink">Generate</a></li>
+				<li>{{navbarIndex}}</li>
+			</ul>
+		</div>
+	</nav-->
+	{{> Template.dynamic template=main}}
+</template>

@@ -1,0 +1,24 @@
+<template name="studentsPage">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Student</th>
+				<th>Company</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each students}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{company}} {{> deleteItemFromTable}}</td>
+		</tr>
+		{{/each}}
+		</tbody>
+	</table>
+	<div class="jumbotron" style="padding: 20px">
+		<h3 align="center">Add Student</h3>
+		<div class="new-students-container">
+			{{> quickForm collection="Students" id="insertStudentForm" type="insert" class="new-student-form"}}
+		</div>
+	</div>
+</template>

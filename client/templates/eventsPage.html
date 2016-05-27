@@ -1,0 +1,61 @@
+<template name="eventsPage">
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="padding-left:20px">Event</th>
+				<th>Number of Tables</th>
+				<th>Seats per Table</th>
+				<th>Days</th>
+				<th>Attendees</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each events}}
+		<tr>
+			<td style="padding-left:20px">{{name}}</td>
+			<td>{{tables}}</td>
+			<td>{{seats}}</td>
+			<td>{{days}}</td>
+			<td>{{attendees.length}} {{> deleteItemFromTable}}</td>
+		</tr>
+		{{/each}}
+		</tbody>
+	</table>
+	<!--div class="jumbotron" style="padding: 20px">
+		<h3 align="center">Add Event</h3>
+		<div class="new-event-container">
+			{{> quickForm collection="Events" id="insertEventForm" type="insert" class="new-event-form"}}
+		</div>
+	</div-->
+	<div class="jumbotron" style="padding: 20px">
+		<h3 align="center">Add Event</h3>
+		<form class="form">
+			<div class="form-group">
+				<label style="padding-top: 10px" for="name">Name</label>
+				<input class="form-control" id="name" type="text"/>
+			</div>
+			<div class="form-group">
+				<label for="tables">Number of Tables</label>
+				<input class="form-control" id="tables" type="text"/>
+			</div>
+			<div class="form-group">
+				<label for="seats">Seats per Table</label>
+				<input class="form-control" id="seats" type="text"/>
+			</div>
+			<div class="form-group">
+				<label for="days">Number of Days</label>
+				<input class="form-control" id="days" type="text"/>
+			</div>
+			<div class="form-group">
+				<label for="attendees">Attendees</label>
+				<textarea class="form-control" id="attendees" rows="6" placeholder="name of person,name of company">{{attendeesText}}</textArea>
+			</div>
+			or
+			<div class="form-group" style="padding-top: 10px">
+				<label class="custombutton" for="attendeesFile" style="">Load Attendees from a File</label>
+				<input class="inputfile" id="attendeesFile" type="file"/>
+			</div>
+			<button class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+</template>

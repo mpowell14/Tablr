@@ -1,25 +1,80 @@
 <head>
-  <title>simple</title>
+	<title>Tablr</title>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="main.css">
+
+	<style>
+	.navbar {
+		box-shadow: 0px 2px 8px;
+	}
+	.nav a {
+		color:#EEAF30;
+	}
+	.nav li a:hover {
+		color:#595B5C;
+		background-color:#FCD450;
+	}
+	.nav li a:focus {
+		color:#595B5C;
+		background-color:#EEAF30;
+	}
+	.jumbotron, .panel, .panel-default>.panel-heading, .panel ul li,
+		.table, .table tbody tr td, .table thead tr th {
+		color:#007934;
+		background-color:#D5D6D2;
+		border-color:#B5B6B3;
+	}
+
+	.inputfile {
+		width: 0.1px;
+		height: 0.1px;
+		opacity: 0;
+		overflow: hidden;
+		position: absolute;
+		z-index: -1;
+	}
+
+	.custombutton {
+		color: white;
+		padding: 8px;
+		background-color: #61C250;
+		border-color: #57AD48;
+		border-radius: 4px;
+		border-style: solid;
+		border-width: 1px;
+		cursor: pointer;
+		font-size: 14px;
+		font-weight: 400;
+	}
+	label.custombutton:hover {
+		background-color: #007934;
+	}
+	label.custombutton:active {
+		background-color: #275937;
+	}
+	</style>
+	<!-- box-shadow: 0px 1px 4px 1px #000 inset; -->
 </head>
 
-<body>
-  <h1>Welcome to Tablr!</h1>
-
-  {{> hello}}
-  {{> info}}
+<body style="background-color:#D5D6D2;">
+	<nav class="navbar customNavbar" style="background-color:#595B5C">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/" style="color: #EEAF30">Tablr</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li class="{{ isActivePath '/' }}"><a href="/" id="HomeLink">Home</a></li>
+				{{#if currentUser}}
+				<li class="{{ isActivePath '/events' }}"><a href="/events" id="EventsLink">Events</a></li>
+				<!--li class="{{ isActivePath '/tables' }}"><a href="/tables" id="TablesLink">Tables</a></li>
+				<li class="{{ isActivePath '/students' }}"><a href="/students" id="StudentsLink">Students</a></li-->
+				<li class="{{ isActivePath '/generate' }}"><a href="/generate" id="GenerateLink">Generate</a></li>
+				{{/if}}
+				<li><span style="float: right; padding:15px">{{> loginButtons}}</span></li>
+			</ul>
+		</div>
+	</nav>
+	<!--input class="form-control-file" type="file" id="fileinput"/-->
 </body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com">Discussions</a></li>
-  </ul>
-</template>
