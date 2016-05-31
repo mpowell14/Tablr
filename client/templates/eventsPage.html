@@ -29,26 +29,31 @@
 	</div-->
 	<div class="jumbotron" style="padding: 20px">
 		<h3 align="center">Add Event</h3>
-		<form class="form">
+		<form class="form" novalidate="novalidate">
 			<div class="form-group">
 				<label style="padding-top: 10px" for="name">Name</label>
-				<input class="form-control" id="name" type="text"/>
+				<input class="form-control" id="name" type="text" required/>
+				<div class="warningLabelInvisible" id="nameWarning">Error: Name field is required.</div>
 			</div>
 			<div class="form-group">
 				<label for="tables">Number of Tables</label>
-				<input class="form-control" id="tables" type="text"/>
+				<input class="form-control" id="tables" type="text" required/>
+				<div class="warningLabelInvisible" id="tablesWarning">Error: Tables field is required.</div>
 			</div>
 			<div class="form-group">
 				<label for="seats">Seats per Table</label>
-				<input class="form-control" id="seats" type="text"/>
+				<input class="form-control" id="seats" type="text" required/>
+				<div class="warningLabelInvisible" id="seatsWarning">Error: Seats field is required.</div>
 			</div>
 			<div class="form-group">
 				<label for="days">Number of Days</label>
-				<input class="form-control" id="days" type="text"/>
+				<input class="form-control" id="days" type="text" required/>
+				<div class="warningLabelInvisible" id="daysWarning">Error: Days field is required.</div>
 			</div>
 			<div class="form-group">
 				<label for="attendees">Attendees</label>
-				<textarea class="form-control" id="attendees" rows="6" placeholder="name of person,name of company">{{attendeesText}}</textArea>
+				<textarea class="form-control" id="attendees" rows="6" placeholder="name of person,name of company" required>{{attendeesText}}</textArea>
+				<div class="warningLabelInvisible" id="attendeesWarning">Error: Attendees field is required.</div>
 			</div>
 			or
 			<div class="form-group" style="padding-top: 10px">

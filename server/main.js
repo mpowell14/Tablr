@@ -43,7 +43,7 @@ Meteor.startup(() => {
 		}
 	});
 
-	Meteor.publish('events', function eventsPublication() {
+	Meteor.publish('events', function() {
 		return Events.find({
 			$or: [
 				{ owner: this.userId }

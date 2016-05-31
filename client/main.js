@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Events } from '../imports/api/events.js';
+import './main.css';
 import './main.html';
 import '../imports/startup/accounts-config.js';
 
