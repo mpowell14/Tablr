@@ -35,9 +35,22 @@ function markInputValid(input, id) {
 	document.getElementById(id).className = "warningLabelInvisible";
 }
 
+function markCSVInvalid(input) {
+	input.setAttribute("style", "border-color: #FF0000");
+	document.getElementById("attendeesMissingWarning").className = "warningLabelVisible";
+}
+
+function markCSVValid(input) {
+	input.setAttribute("style", "border-color: #CCC");
+	document.getElementById("attendeesMissingWarning").className = "warningLabelInvisible";
+}
+
 Template.eventsPage.events({
 	'focus .form-control':function(e) {
 		markInputValid(e.target, e.target.id + "Warning");
+		if (e.target.id == "attendees") {
+			markCSVValid(e.target);
+		}
 	},
 	'change .inputfile':function(e) {
 		e.preventDefault();
@@ -53,14 +66,35 @@ Template.eventsPage.events({
 	'submit .form': function(event) {
 		event.preventDefault();
 		// "name,company\n" is included so the objects have the correct keys.
+		var attendeesValidated = true;
 		attendees = csvToArray("name,company\n" + event.target.attendees.value, ',');
-		console.log(attendees);
-		Meteor.call('insertEventCSV', event.target.name.value, event.target.tables.value, event.target.seats.value, event.target.days.value, attendees, function(error, result) {
-			markInputInvalid(event.target.name, "nameWarning");
-			markInputInvalid(event.target.tables, "tablesWarning");
-			markInputInvalid(event.target.seats, "seatsWarning");
-			markInputInvalid(event.target.days, "daysWarning");
+		for (i in attendees) {
+			var attendee = attendees[i];
+			if (!attendee.hasOwnProperty("name") || !attendee.hasOwnProperty("company")) {
+				markCSVInvalid(event.target.attendees);
+				attendeesValidated = false;
+				break;
+			}
+		}
+		markInputInvalid(event.target.name, "nameWarning");
+		markInputInvalid(event.target.tables, "tablesWarning");
+		markInputInvalid(event.target.seats, "seatsWarning");
+		markInputInvalid(event.target.days, "daysWarning");
+		
+		if (!attendeesValidated) {
+			//We don't want to insert anything into the database if the
+			//csv data is malformatted, but it's ok if the other data is
+			//missing because meteor will catch that for us.
+			return;
+		} else if (event.target.attendees.value == "") {
+			//If the attendees don't pass validation, this might
+			//overwrite the error message, so we don't call it if
+			//the attendees fail to validate.
 			markInputInvalid(event.target.attendees, "attendeesWarning");
+			return;
+		}
+		
+		Meteor.call('insertEventCSV', event.target.name.value, event.target.tables.value, event.target.seats.value, event.target.days.value, attendees, function(error, result) {
 			console.log(error);
 		});
 	},
