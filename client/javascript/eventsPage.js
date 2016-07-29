@@ -1,4 +1,5 @@
 import { Events } from '../../imports/api/events.js';
+import { calculateSeatingArrangementsForArrays } from '../algorithm.js';
 
 window.Events = Events;
 
@@ -43,6 +44,34 @@ function markCSVInvalid(input) {
 function markCSVValid(input) {
 	input.setAttribute("style", "border-color: #CCC");
 	document.getElementById("attendeesMissingWarning").className = "warningLabelInvisible";
+}
+
+function calculateSeatingArrangementsForEvents(numberOfDays, tableCount, seatCount, attendees) {
+	var tables 			= [];
+	var students 		= [];
+	var i = 0;
+	for (i = 0; i < tableCount; i++) {
+		tables.push({
+			table:"Table " + (i + 1),
+			seats:seatCount,
+			students:[]
+		});
+	}
+
+	i = 0;
+	/*
+	for (i = 0; i < eventObject["attendees"].length; i++) {
+		students.push({
+			name:eventObject["attendees"][i].name,
+			company:eventObject["attendees"][i].company,
+			studentsSatWith:[]
+		});
+	}*/
+	students = attendees.map((a) => {
+		a.studentsSatWith = [];
+		return a;
+	});
+	return calculateSeatingArrangementsForArrays(numberOfDays, tables, students);
 }
 
 Template.eventsPage.events({
@@ -93,16 +122,46 @@ Template.eventsPage.events({
 			markInputInvalid(event.target.attendees, "attendeesWarning");
 			return;
 		}
+		var name 	= event.target.name.value;
+		var tables 	= event.target.tables.value;
+		var seats 	= event.target.seats.value;
+		var days 	= event.target.days.value;
 		
+		var tablesArray = calculateSeatingArrangementsForEvents(days, tables, seats, attendees);
+		console.log(tablesArray);
+		tablesArray = tablesArray.map((table, index) => {
+			var arr = ["Day " + index, ""];
+			for (i in table.array) {
+				for (j in table.array[i].students) {
+					arr.push(table.array[i].students[j].name);
+				}
+				arr.push(" ");
+			}
+			return arr;
+		});
+		/*
 		Meteor.call('insertEventCSV', event.target.name.value, event.target.tables.value, event.target.seats.value, event.target.days.value, attendees, function(error, result) {
 			console.log(error);
 		});
+		*/
+		var fields = ["Day", ""];
+		for (var i = 0; i < tables; i++) {
+			fields.push("Table " + (i + 1));
+			for (var j = 0; j < seats; j++) {
+				fields.push("");
+			}
+		}
+		var data = {
+			data: tablesArray,
+			fields: fields
+		}
+		console.log(data);
+		let csv = Papa.unparse(data);
+		csv = new Blob([csv], { type: 'text/csv' } );
+		saveAs(csv, name + ".csv");
 	},
 	'click .btn-danger': function() {
 		Meteor.call('deleteEvent', this._id);
 	}
-});
 
-export function cooper() {
-	console.log("cooper");
-}
+});

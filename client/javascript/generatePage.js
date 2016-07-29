@@ -58,5 +58,9 @@ Template.generatePage.events({
 			console.log(result);
 			Template.instance().tables.set(result);
 		}
+		console.log(Template.instance())
+		Blaze.saveAsPDF(Template.generatePage, {
+			
+		})
 	}
 });

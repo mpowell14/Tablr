@@ -32,3 +32,6 @@ accounts-ui
 accounts-password
 gwendall:auth-client-callbacks
 maxharris9:csv-import
+ongoworks:pdf
+harrison:papa-parse
+pfafman:filesaver
