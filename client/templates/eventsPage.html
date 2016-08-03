@@ -1,8 +1,8 @@
 <template name="eventsPage">
-	<table class="table">
+<!-- 	<table class="table">
 		<thead>
 			<tr>
-				<th style="padding-left:20px">Event</th>
+				<th class="topTableRow">Event</th>
 				<th>Number of Tables</th>
 				<th>Seats per Table</th>
 				<th>Days</th>
@@ -12,7 +12,7 @@
 		<tbody>
 		{{#each events}}
 		<tr>
-			<td style="padding-left:20px">{{name}}</td>
+			<td class="topTableRow">{{name}}</td>
 			<td>{{tables}}</td>
 			<td>{{seats}}</td>
 			<td>{{days}}</td>
@@ -20,18 +20,12 @@
 		</tr>
 		{{/each}}
 		</tbody>
-	</table>
-	<!--div class="jumbotron" style="padding: 20px">
-		<h3 align="center">Add Event</h3>
-		<div class="new-event-container">
-			{{> quickForm collection="Events" id="insertEventForm" type="insert" class="new-event-form"}}
-		</div>
-	</div-->
-	<div class="jumbotron" style="padding: 20px">
+	</table> -->
+	<div class="jumbotron topTableRow">
 		<h3 align="center">Add Event</h3>
 		<form class="form" novalidate="novalidate">
 			<div class="form-group">
-				<label style="padding-top: 10px" for="name">Name</label>
+				<label class="topTableRow" for="name">Name</label>
 				<input class="form-control" id="name" type="text" required/>
 				<div class="warningLabelInvisible" id="nameWarning">Error: Name field is required.</div>
 			</div>
@@ -61,7 +55,7 @@
 				<label class="custombutton" for="attendeesFile" style="">Load Attendees from a File</label>
 				<input class="inputfile" id="attendeesFile" type="file"/>
 			</div>
-			<button class="btn btn-primary">Submit</button>
+			<button class="btn btn-primary submitButton">Generate</button>
 		</form>
 	</div>
 </template>
