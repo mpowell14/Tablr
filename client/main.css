@@ -1,70 +1,70 @@
-/* CSS declarations go here */
-	.body {
-		color: #61c250;
-	}
 
-	.navbar {
-		box-shadow: 0px 2px 8px black;
-	}
-	.nav a {
-		color:#EEAF30;
-	}
-	.nav li a {
-		transition-duration: 0.4s;
-	}
-	.nav li a:hover {
-		color:#595B5C;
-		background-color:#FCD450;
-	}
-	.nav li a:focus {
-		color:#595B5C;
-		background-color:#EEAF30;
-	}
-	.jumbotron, .panel, .panel-default>.panel-heading, .panel ul li,
-		.table, .table tbody tr td, .table thead tr th {
-		color:#007934;
-		background-color:#D5D6D2;
-		border-color:#B5B6B3;
-	}
+.body {
+	color: #61c250;
+}
 
-	.inputfile {
-		width: 0.1px;
-		height: 0.1px;
-		opacity: 0;
-		overflow: hidden;
-		position: absolute;
-		z-index: -1;
-	}
+.navbar {
+	box-shadow: 0px 2px 8px black;
+}
+.nav a {
+	color:#EEAF30;
+}
+.nav li a {
+	transition-duration: 0.4s;
+}
+.nav li a:hover {
+	color:#595B5C;
+	background-color:#FCD450;
+}
+.nav li a:focus {
+	color:#595B5C;
+	background-color:#EEAF30;
+}
+.jumbotron, .panel, .panel-default>.panel-heading, .panel ul li,
+	.table, .table tbody tr td, .table thead tr th {
+	color:#007934;
+	background-color:#D5D6D2;
+	border-color:#B5B6B3;
+}
 
-	.custombutton {
-		color: white;
-		padding: 8px;
-		background-color: #61C250;
-		border-color: #57AD48;
-		border-radius: 4px;
-		border-style: solid;
-		border-width: 1px;
-		cursor: pointer;
-		font-size: 14px;
-		font-weight: 400;
-	}
-	label.custombutton:hover {
-		background-color: #007934;
-	}
-	label.custombutton:active {
-		background-color: #275937;
-	}
-	.warningLabelVisible {
-		color: red;
-		transition-duration: 0.4s;
-		opacity: 1.0;
-		/* max-height is set to an arbitrarily large value */
-		max-height: 999999px;
-	}
-	.warningLabelInvisible {
-		color: red;
-		transition-duration: 0.4s;
-		opacity: 0.0;
-		overflow: hidden;
-		max-height: 0px;
-	}
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.custombutton {
+	color: white;
+	padding: 8px;
+	background-color: #61C250;
+	border-color: #57AD48;
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 400;
+}
+label.custombutton:hover {
+	background-color: #007934;
+}
+label.custombutton:active {
+	background-color: #275937;
+}
+.warningLabelVisible {
+	color: red;
+	transition-duration: 0.4s;
+	opacity: 1.0;
+	/* max-height is set to an arbitrarily large value */
+	max-height: 999999px;
+}
+.warningLabelInvisible {
+	color: red;
+	transition-duration: 0.4s;
+	opacity: 0.0;
+	overflow: hidden;
+	max-height: 0px;
+}

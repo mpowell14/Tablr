@@ -23,13 +23,7 @@ kadira:blaze-layout
 
 reactive-dict
 practicalmeteor:mocha@2.1.1-rc.1
-aldeed:simple-schema
-aldeed:collection2
-aldeed:autoform
-zimme:active-route
 session
-accounts-ui
-accounts-password
 gwendall:auth-client-callbacks
 maxharris9:csv-import
 ongoworks:pdf

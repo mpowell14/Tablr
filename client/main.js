@@ -11,12 +11,3 @@ UI.registerHelper('equals', function(a, b) {
 UI.registerHelper('add', (a, b) => {
 	return a + b;
 });
-
-Accounts.onLogin(function() {
-	FlowRouter.go('events');
-});
-Accounts.onLogout(function() {
-	FlowRouter.go('home');
-});
-
-window.Events 	= Events;
