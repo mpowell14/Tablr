@@ -1,12 +1,18 @@
-import { Events } from '../../imports/api/events.js';
 import { calculateSeatingArrangementsForArrays } from '../algorithm.js';
 
-window.Events = Events;
+function downloadCSV(name, data) {
+	let csv = Papa.unparse(data);
+	csv = new Blob([csv], { type: 'text/csv' } );
+	saveAs(csv, name + ".csv");
+}
 
 Template.eventsPage.onCreated(function eventsPageOnCreated() {
 	Meteor.subscribe('events');
 	Template.instance().attendeesText = new ReactiveVar("");
 	Template.instance().nameWarningLabelClass = new ReactiveVar("warningLabelInvisible");
+	Template.instance().tablesErrorText = new ReactiveVar("Error: Tables is required.");
+	Template.instance().seatsErrorText = new ReactiveVar("Error: Seats is required.");
+	Template.instance().daysErrorText = new ReactiveVar("Error: Days is required.");
 });
 
 Template.eventsPage.helpers({
@@ -19,13 +25,28 @@ Template.eventsPage.helpers({
 	nameWarningLabelClass() {
 		console.log(Template.instance().nameWarningLabelClass.get());
 		return Template.instance().nameWarningLabelClass.get();
-	}
+	},
+	tablesErrorText() {
+		return Template.instance().tablesErrorText.get();
+	},
+	seatsErrorText() {
+		return Template.instance().seatsErrorText.get();
+	},
+	daysErrorText() {
+		return Template.instance().daysErrorText.get();
+	},
 });
 
 function markInputInvalid(input, id) {
-	if (input.value == "") {
+	
+	if (input.value == "" || (input.type == "number" && input.value <= 0)) {
 		input.setAttribute("style", "border-color: #FF0000;");
 		document.getElementById(id).className = "warningLabelVisible";
+		if (input.type == "number" && input.value <= 0) {
+			Template.instance().tablesErrorText.set("Error: Tables must be positive.");
+		} else {
+			Template.instance().tablesErrorText.set("Error: Tables is required.");
+		}
 	} else {
 		markInputValid(input, id);
 	}
@@ -96,15 +117,41 @@ Template.eventsPage.events({
 		event.preventDefault();
 		// "name,company\n" is included so the objects have the correct keys.
 		var attendeesValidated = true;
-		attendees = csvToArray("name,company\n" + event.target.attendees.value, ',');
+		var attendeesValue = event.target.attendees.value;
+		if (event.target.attendees.value.substring(0, 12) != "name,company") {
+			//The CSV parser assumes the top row is the column names,
+			//so if they aren't, we have to manually insert them.
+			attendeesValue = "name,company\n" + attendeesValue;
+		}
+		attendees = csvToArray(attendeesValue, ',');
+		var nameCount = 0;
+		var companyCount = 0;
 		for (i in attendees) {
 			var attendee = attendees[i];
-			if (!attendee.hasOwnProperty("name") || !attendee.hasOwnProperty("company")) {
-				markCSVInvalid(event.target.attendees);
-				attendeesValidated = false;
-				break;
+			if (attendee.hasOwnProperty("name")) {
+				nameCount++;
 			}
+			//We check for an empty string because that should
+			//catch errant commas at the end of lines.
+			if (attendee.hasOwnProperty("company") && attendee.company != "") {
+				companyCount++;
+			} else {
+				//We insert a company because the algorithm expects
+				//one. If all attendees' companies are the same, it
+				//doesn't affect the algorithm. We keep track of who
+				//had an assigned company (rather than us manually
+				//setting it to "none"), and if there are no companies,
+				//we use the dummy values, but if there are some companies
+				//missing and some there, we know the CSV is malformed.
+				attendee.company = "none";
+			}
+			// if (!attendee.hasOwnProperty("name") || !attendee.hasOwnProperty("company")) {
+				// markCSVInvalid(event.target.attendees);
+				// attendeesValidated = false;
+				// break;
+			// }
 		}
+		
 		markInputInvalid(event.target.name, "nameWarning");
 		markInputInvalid(event.target.tables, "tablesWarning");
 		markInputInvalid(event.target.seats, "seatsWarning");
@@ -114,6 +161,13 @@ Template.eventsPage.events({
 			//We don't want to insert anything into the database if the
 			//csv data is malformatted, but it's ok if the other data is
 			//missing because meteor will catch that for us.
+			markCSVInvalid(event.target.attendees, "attendeesWarning");
+			return;
+		} else if (nameCount != attendees.length) {
+			markCSVInvalid(event.target.attendees);
+			return;
+		} else if (nameCount != companyCount && companyCount != 0) {
+			markCSVInvalid(event.target.attendees);
 			return;
 		} else if (event.target.attendees.value == "") {
 			//If the attendees don't pass validation, this might
@@ -121,19 +175,48 @@ Template.eventsPage.events({
 			//the attendees fail to validate.
 			markInputInvalid(event.target.attendees, "attendeesWarning");
 			return;
+		} else if (event.target.name.value == "") {
+			return;
+		} else if (event.target.tables.value == "") {
+			return;
+		} else if (event.target.seats.value == "") {
+			return;
+		} else if (event.target.days.value == "") {
+			return;
 		}
+		
 		var name 	= event.target.name.value;
 		var tables 	= event.target.tables.value;
 		var seats 	= event.target.seats.value;
 		var days 	= event.target.days.value;
 		
+		if (tables <= 0) {
+			return;
+		} else if (seats <= 0) {
+			return;
+		} else if (days <= 0) {
+			return;
+		}
+		
+		if (attendees.length > tables * seats) {
+			alert("Error: The number of attendees (" + attendees.length + ") is greater than the total number of seats (" + (tables * seats) + ").");
+			return;
+		}
+		
 		var tablesArray = calculateSeatingArrangementsForEvents(days, tables, seats, attendees);
 		console.log(tablesArray);
 		tablesArray = tablesArray.map((table, index) => {
-			var arr = ["Day " + index, ""];
+			var arr = ["Day " + (index + 1), ""];
 			for (i in table.array) {
 				for (j in table.array[i].students) {
 					arr.push(table.array[i].students[j].name);
+				}
+				//Insert empty spaces if there
+				//are not enough students to fill
+				//all the seats
+				while (j < seats - 1) {
+					arr.push("");
+					j++;
 				}
 				arr.push(" ");
 			}
@@ -155,13 +238,14 @@ Template.eventsPage.events({
 			data: tablesArray,
 			fields: fields
 		}
-		console.log(data);
-		let csv = Papa.unparse(data);
-		csv = new Blob([csv], { type: 'text/csv' } );
-		saveAs(csv, name + ".csv");
+		downloadCSV(name, data);
 	},
-	'click .btn-danger': function() {
-		Meteor.call('deleteEvent', this._id);
+	'click #downloadCSVButton': function() {
+		var data = {
+			data: [],
+			fields: ["name", "company"]
+		}
+		downloadCSV("Attendees", data);
 	}
 
 });

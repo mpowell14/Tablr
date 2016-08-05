@@ -1,0 +1,30 @@
+<template name="instructions">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-3">
+				<h2 class="instructionsHeader">Instructions</h2>
+			</div>
+			<div class="col-xs-9">
+				<button class="btn btn-primary" id="showButton">{{buttonText}}</button>
+			</div>
+		</div>
+		{{#if visible}}
+			<div class="row">
+				<div class="col-xs-12">	
+					<p>
+						Input the name of your event, number of tables at your event,
+						the number of seats at each table (it is assumed that each table
+						has the same number of seats), the number of days your event
+						occurs for, and the people attending your event.
+						The people should each be on an individual line. Optionally, you may
+						include a person's company. If you do, separate the person's name and
+						company by a comma (and only a comma). You may also upload a CSV file
+						of the attendees' names (and optionally their company). An example CSV
+						file is provided for you. Note that some tables might not be full each
+						day if there are not enough attendees to fill them.
+					</p>
+				</div>
+			</div>
+		{{/if}}
+	</div>
+</template>

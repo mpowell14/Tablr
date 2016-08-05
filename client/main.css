@@ -48,10 +48,10 @@
 	font-size: 14px;
 	font-weight: 400;
 }
-label.custombutton:hover {
+.custombutton:hover {
 	background-color: #007934;
 }
-label.custombutton:active {
+.custombutton:active {
 	background-color: #275937;
 }
 .warningLabelVisible {
