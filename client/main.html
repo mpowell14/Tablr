@@ -3,29 +3,7 @@
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-	<style>
-
-	</style>
 </head>
 
-<body style="background-color:#D5D6D2;">
-	<nav class="navbar" style="background-color:#595B5C">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="/" style="color: #EEAF30">Tablr</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li class="{{ isActivePath '/' }}"><a href="/" id="HomeLink">Home</a></li>
-				{{#if currentUser}}
-				<li class="{{ isActivePath '/events' }}"><a href="/events" id="EventsLink">Events</a></li>
-				<!--li class="{{ isActivePath '/tables' }}"><a href="/tables" id="TablesLink">Tables</a></li>
-				<li class="{{ isActivePath '/students' }}"><a href="/students" id="StudentsLink">Students</a></li-->
-				<li class="{{ isActivePath '/generate' }}"><a href="/generate" id="GenerateLink">Generate</a></li>
-				{{/if}}
-				<li><span style="float: right; padding:15px">{{> loginButtons}}</span></li>
-			</ul>
-		</div>
-	</nav>
-	<!--input class="form-control-file" type="file" id="fileinput"/-->
+<body>
 </body>

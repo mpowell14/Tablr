@@ -1,28 +1,6 @@
 <template name="eventsPage">
-<!-- 	<table class="table">
-		<thead>
-			<tr>
-				<th class="topTableRow">Event</th>
-				<th>Number of Tables</th>
-				<th>Seats per Table</th>
-				<th>Days</th>
-				<th>Attendees</th>
-			</tr>
-		</thead>
-		<tbody>
-		{{#each events}}
-		<tr>
-			<td class="topTableRow">{{name}}</td>
-			<td>{{tables}}</td>
-			<td>{{seats}}</td>
-			<td>{{days}}</td>
-			<td>{{attendees.length}} {{> deleteItemFromTable}}</td>
-		</tr>
-		{{/each}}
-		</tbody>
-	</table> -->
-	<div class="jumbotron topTableRow">
-		<h3 align="center">Add Event</h3>
+	<div class="topTableRow">
+		{{> instructions}}
 		<form class="form" novalidate="novalidate">
 			<div class="form-group">
 				<label class="topTableRow" for="name">Name</label>
@@ -31,17 +9,17 @@
 			</div>
 			<div class="form-group">
 				<label for="tables">Number of Tables</label>
-				<input class="form-control" id="tables" type="text" required/>
-				<div class="warningLabelInvisible" id="tablesWarning">Error: Tables field is required.</div>
+				<input class="form-control" id="tables" type="number" min="1" step="1" required/>
+				<div class="warningLabelInvisible" id="tablesWarning">{{tablesErrorText}}</div>
 			</div>
 			<div class="form-group">
 				<label for="seats">Seats per Table</label>
-				<input class="form-control" id="seats" type="text" required/>
+				<input class="form-control" id="seats" type="number" min="1" step="1" required/>
 				<div class="warningLabelInvisible" id="seatsWarning">Error: Seats field is required.</div>
 			</div>
 			<div class="form-group">
 				<label for="days">Number of Days</label>
-				<input class="form-control" id="days" type="text" required/>
+				<input class="form-control" id="days" type="number" min="1" step="1" required/>
 				<div class="warningLabelInvisible" id="daysWarning">Error: Days field is required.</div>
 			</div>
 			<div class="form-group">
@@ -54,8 +32,9 @@
 			<div class="form-group" style="padding-top: 10px">
 				<label class="custombutton" for="attendeesFile" style="">Load Attendees from a File</label>
 				<input class="inputfile" id="attendeesFile" type="file"/>
+				<button type="button" class="custombutton" id="downloadCSVButton">Example CSV</button>
 			</div>
-			<button class="btn btn-primary submitButton">Generate</button>
+			<button type="submit" class="btn btn-primary submitButton">Generate</button>
 		</form>
 	</div>
 </template>
