@@ -1,12 +1,10 @@
-import { Events } from '../../imports/api/events.js';
 import { calculateSeatingArrangementsForArrays } from '../algorithm.js';
-
-window.Events = Events;
 
 Template.eventsPage.onCreated(function eventsPageOnCreated() {
 	Meteor.subscribe('events');
 	Template.instance().attendeesText = new ReactiveVar("");
 	Template.instance().nameWarningLabelClass = new ReactiveVar("warningLabelInvisible");
+    Template.instance().usingCompany = new ReactiveVar(true);
 });
 
 Template.eventsPage.helpers({
@@ -17,7 +15,6 @@ Template.eventsPage.helpers({
 		return Template.instance().attendeesText.get();
 	},
 	nameWarningLabelClass() {
-		console.log(Template.instance().nameWarningLabelClass.get());
 		return Template.instance().nameWarningLabelClass.get();
 	}
 });
@@ -26,8 +23,10 @@ function markInputInvalid(input, id) {
 	if (input.value == "") {
 		input.setAttribute("style", "border-color: #FF0000;");
 		document.getElementById(id).className = "warningLabelVisible";
+        return true;
 	} else {
 		markInputValid(input, id);
+        return false;
 	}
 }
 
@@ -46,6 +45,22 @@ function markCSVValid(input) {
 	document.getElementById("attendeesMissingWarning").className = "warningLabelInvisible";
 }
 
+function validateCSVInput(attendeesCSV, includeCompany) {
+    let attendees = attendeesCSV.split("\n");
+    for (var i in attendees) {
+        if (includeCompany) {
+            if (!/\s*.+\s*,\s*.+\s*/.test(attendees[i])) {
+                return i;
+            }
+        } else {
+            if (!/\s*.+\s*/.test(attendees[i])) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
 function calculateSeatingArrangementsForEvents(numberOfDays, tableCount, seatCount, attendees) {
 	var tables 			= [];
 	var students 		= [];
@@ -59,20 +74,36 @@ function calculateSeatingArrangementsForEvents(numberOfDays, tableCount, seatCou
 	}
 
 	i = 0;
-	/*
-	for (i = 0; i < eventObject["attendees"].length; i++) {
-		students.push({
-			name:eventObject["attendees"][i].name,
-			company:eventObject["attendees"][i].company,
-			studentsSatWith:[]
-		});
-	}*/
 	students = attendees.map((a) => {
 		a.studentsSatWith = [];
 		return a;
 	});
 	return calculateSeatingArrangementsForArrays(numberOfDays, tables, students);
 }
+
+Template.eventsPage.helpers({
+    'companyButtonText':function() {
+        if (Template.instance().usingCompany.get()) {
+            return "Include Company";
+        } else {
+            return "No Company";
+        }
+    },
+    'attendeesPlaceholder':function() {
+        if (Template.instance().usingCompany.get()) {
+            return "name of person,name of company";
+        } else {
+            return "name of person";
+        }
+    },
+    'attendeesMissingWarning':function() {
+        if (Template.instance().usingCompany.get()) {
+            return " and a company";
+        } else {
+            return "";
+        }
+    }
+});
 
 Template.eventsPage.events({
 	'focus .form-control':function(e) {
@@ -91,26 +122,40 @@ Template.eventsPage.events({
 		};
 		f.readAsText(e.target.files[0]);
 	},
-	
 	'submit .form': function(event) {
 		event.preventDefault();
 		// "name,company\n" is included so the objects have the correct keys.
+        let attendees = [];
 		var attendeesValidated = true;
-		attendees = csvToArray("name,company\n" + event.target.attendees.value, ',');
-		for (i in attendees) {
-			var attendee = attendees[i];
-			if (!attendee.hasOwnProperty("name") || !attendee.hasOwnProperty("company")) {
-				markCSVInvalid(event.target.attendees);
-				attendeesValidated = false;
-				break;
-			}
-		}
-		markInputInvalid(event.target.name, "nameWarning");
-		markInputInvalid(event.target.tables, "tablesWarning");
-		markInputInvalid(event.target.seats, "seatsWarning");
-		markInputInvalid(event.target.days, "daysWarning");
-		
-		if (!attendeesValidated) {
+        if (Template.instance().usingCompany.get()) {
+    		attendees = csvToArray("name,company\n" + event.target.attendees.value, ',');
+        } else {
+    		attendees = csvToArray("name\n" + event.target.attendees.value, ',');
+            attendees = attendees.map((a) => {
+                return {
+                    name: a.name,
+                    //Add a dummy company so the algorithm still works,
+                    //but ignores the company field (because everyone
+                    //has the same company, so it doesn't affect anything).
+                    company: ""
+                }
+            });
+        }
+        let validated = validateCSVInput(event.target.attendees.value, Template.instance().usingCompany.get());
+        if (validated != -1) {
+            markCSVInvalid(event.target.attendees);
+            attendeesValidated = false;
+        } else {
+            attendeesValidated = true;
+        }
+
+        let isInvalid = false;
+		isInvalid = markInputInvalid(event.target.name, "nameWarning") || isInvalid;
+		isInvalid = markInputInvalid(event.target.tables, "tablesWarning") || isInvalid;
+		isInvalid = markInputInvalid(event.target.seats, "seatsWarning") || isInvalid;
+		isInvalid = markInputInvalid(event.target.days, "daysWarning") || isInvalid;
+
+		if (!attendeesValidated || isInvalid) {
 			//We don't want to insert anything into the database if the
 			//csv data is malformatted, but it's ok if the other data is
 			//missing because meteor will catch that for us.
@@ -122,15 +167,15 @@ Template.eventsPage.events({
 			markInputInvalid(event.target.attendees, "attendeesWarning");
 			return;
 		}
+
 		var name 	= event.target.name.value;
 		var tables 	= event.target.tables.value;
 		var seats 	= event.target.seats.value;
 		var days 	= event.target.days.value;
-		
+
 		var tablesArray = calculateSeatingArrangementsForEvents(days, tables, seats, attendees);
-		console.log(tablesArray);
 		tablesArray = tablesArray.map((table, index) => {
-			var arr = ["Day " + index, ""];
+			var arr = ["Day " + (index + 1), ""];
 			for (i in table.array) {
 				for (j in table.array[i].students) {
 					arr.push(table.array[i].students[j].name);
@@ -139,11 +184,6 @@ Template.eventsPage.events({
 			}
 			return arr;
 		});
-		/*
-		Meteor.call('insertEventCSV', event.target.name.value, event.target.tables.value, event.target.seats.value, event.target.days.value, attendees, function(error, result) {
-			console.log(error);
-		});
-		*/
 		var fields = ["Day", ""];
 		for (var i = 0; i < tables; i++) {
 			fields.push("Table " + (i + 1));
@@ -155,13 +195,12 @@ Template.eventsPage.events({
 			data: tablesArray,
 			fields: fields
 		}
-		console.log(data);
 		let csv = Papa.unparse(data);
 		csv = new Blob([csv], { type: 'text/csv' } );
 		saveAs(csv, name + ".csv");
 	},
-	'click .btn-danger': function() {
-		Meteor.call('deleteEvent', this._id);
-	}
+	'click .companyToggle':function(event) {
+        Template.instance().usingCompany.set(!Template.instance().usingCompany.get());
+    }
 
 });
