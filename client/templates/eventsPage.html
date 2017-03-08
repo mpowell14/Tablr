@@ -1,31 +1,9 @@
 <template name="eventsPage">
-<!-- 	<table class="table">
-		<thead>
-			<tr>
-				<th class="topTableRow">Event</th>
-				<th>Number of Tables</th>
-				<th>Seats per Table</th>
-				<th>Days</th>
-				<th>Attendees</th>
-			</tr>
-		</thead>
-		<tbody>
-		{{#each events}}
-		<tr>
-			<td class="topTableRow">{{name}}</td>
-			<td>{{tables}}</td>
-			<td>{{seats}}</td>
-			<td>{{days}}</td>
-			<td>{{attendees.length}} {{> deleteItemFromTable}}</td>
-		</tr>
-		{{/each}}
-		</tbody>
-	</table> -->
-	<div class="jumbotron topTableRow">
-		<h3 align="center">Add Event</h3>
+    <div class="topTableRow">
+		<h3 align="center">Event</h3>
 		<form class="form" novalidate="novalidate">
 			<div class="form-group">
-				<label class="topTableRow" for="name">Name</label>
+				<label for="name">Name</label>
 				<input class="form-control" id="name" type="text" required/>
 				<div class="warningLabelInvisible" id="nameWarning">Error: Name field is required.</div>
 			</div>
@@ -46,9 +24,10 @@
 			</div>
 			<div class="form-group">
 				<label for="attendees">Attendees</label>
-				<textarea class="form-control" id="attendees" rows="6" placeholder="name of person,name of company" required>{{attendeesText}}</textArea>
+                <button type="button" class="btn btn-primary companyToggle">{{companyButtonText}}</button>
+				<textarea class="form-control" id="attendees" rows="6" placeholder="{{attendeesPlaceholder}}" required>{{attendeesText}}</textArea>
 				<div class="warningLabelInvisible" id="attendeesWarning">Error: Attendees field is required.</div>
-				<div class="warningLabelInvisible" id="attendeesMissingWarning">Error: All attendees must have a name and a company.</div>
+				<div class="warningLabelInvisible" id="attendeesMissingWarning">Error: All attendees must have a name{{attendeesMissingWarning}}.</div>
 			</div>
 			or
 			<div class="form-group" style="padding-top: 10px">
